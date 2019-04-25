@@ -1,1013 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 	<head>
-		<title>THE GRIZZLY MUFFIN SOUND BOARD</title>
-		<link rel="icon" type="image/png" href="https://cdn.discordapp.com/avatars/98215185596035072/45093842563ffce9bd25969d6c613133.webp?size=128"
-		 sizes="32x32">
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=ubuntu">
-		<script type="text/javascript">
-			var currentMeme;
-			var running = false;
-			var queuerunning = false;
-			var AudioQueue = [];
-			var audios = [];
-			var currentMedia = [];
-			function toggleAllSounds() {
-				if (window.HTMLAudioElement) {
-					try {
-						var oAudio = document.getElementsByName('sound');
-						var btn = document.getElementById('play');
-						var isLimited = document.getElementById("playLimitation").checked;
-						for (var i = 0; i < oAudio.length; i++) {
-							if (isLimited) {
-								if (oAudio[i].offsetParent != null) {
-									if (!running) {
-										oAudio[i].play();
-										btn.innerHTML = "Pause all";
-									}
-									else {
-										oAudio[i].pause();
-										btn.innerHTML = "PLAY <b>ALL</b> AT ONCE";
-									}
-								}
-							}
-							else {
-								if (!running) {
-									oAudio[i].play();
-									btn.innerHTML = "Pause all";
-								}
-								else {
-									oAudio[i].pause();
-									btn.innerHTML = "PLAY <b>ALL</b> AT ONCE";
-								}
-							}
-						}
-						running = !running;
-					}
-					catch (e) {
-						// Fail silently but show in F12 developer tools console
-						if (window.console && console.error("Error:" + e + "catched"));
-					}
-				}
-			}
-			function ChangeSpeed(speed) {
-				var oAudio = document.getElementsByName('sound');
-				document.getElementById("cspeed").value = speed;
-				for (var i = 0; i < oAudio.length; i++) {
-					oAudio[i].playbackRate = speed;
-				}
-			}
-			function ChangeCustomSpeed() {
-				var customSpeed = document.getElementById("cspeed").value;
-				var oAudio = document.getElementsByName('sound');
-				for (var i = 0; i < oAudio.length; i++) {
-					oAudio[i].playbackRate = customSpeed;
-				}
-			}
-			function rewindAudio() {
-				// Check for audio element support.
-				if (window.HTMLAudioElement) {
-					try {
-						var oAudio = document.getElementsByName('sound');
-						for (var i = 0; i < oAudio.length; i++) {
-							oAudio[i].currentTime = 0.0;
-						}
-					}
-					catch (e) {
-						// Fail silently but show in F12 developer tools console
-						if (window.console && console.error("Error:" + e));
-					}
-				}
-			}
-			function playRandomAudio() {
-				var id = Math.floor(Math.random() * audios.length);
-				if (!(document.getElementById("allowMultiplaycheckbox").checked)) {
-					for (i = 0; i < audios.length; i++) {
-						audios[i].pause();
-					}
-				}
-				else { }
-				if (document.getElementById("playLimitation").checked) {
-					if (audios[id].offsetParent === null) {
-						if (!areAllElementsHidden()) {
-							id = Math.floor(Math.random() * audios.length);
-						}
-						else {
-							alert("No sounds to play");
-						}
-					}
-					else {
-						audios[id].currentTime = 0.0;
-						audios[id].play();
-					}
-				}
-				else {
-					audios[id].currentTime = 0.0;
-					audios[id].play();
-				}
-			}
-			function stopAllSounds() {
-				document.getElementById('info_right_side').style.display = "";
-				running = true;
-				queuerunning = false;
-				toggleAllSounds();
-			}
-			function areAllElementsHidden() {
-				var result = true;
-				var oAudio = document.getElementsByName('sound');
-				for (i = 0; i < oAudio.length; i++) {
-					if (oAudio[i].offsetParent != null) {
-						result = false;
-						break;
-					}
-				}
-				return result;
-			}
-			function startsPlaying(id) {
-				var soundElement = document.getElementById('cell_' + id);
-				if (soundElement.innerHTML.toUpperCase().indexOf("EMPTY SLOOT") == -1) {
-					soundElement.style.backgroundColor = "rgba(1, 114, 247, 0.8)";
-					currentMedia.push(soundElement.cloneNode(true));
-					updateCurrentMedia();
-				}
-			}
-			function stopsPlaying(id) {
-				var element = document.getElementById('cell_' + id);
-				currentMedia.splice(currentMedia.indexOf(element), 1);
-				updateCurrentMedia();
-				element.style.backgroundColor = "inherit";
-				if (queuerunning) {
-					runQueue();
-				}
-			}
-			function searchBarKeyUp() {
-				searchFor();
-				var input = document.getElementById("myInput").value.length;
-				if (input > 0) {
-					document.getElementById('btnClearSearchbar').style.display = "";
-				}
-				else {
-					document.getElementById('btnClearSearchbar').style.display = "none";
-				}
-			}
-			function searchFor() {
-				var input, filter, table, tr, td1, td2, i;
-				input = document.getElementById("myInput");
-				filter = input.value.toUpperCase();
-				table = document.getElementById("soundTable");
+		<title>GIZZLY SOUND BAORD</title>
+		<!-- Meta information - for search engines and other clever web bits -->
+		<meta property="og:title" content="GIZZLY MUFFIN SB" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://ringomar.github.io/Grizzly-soundboard/" />
+		<meta property="og:image"
+			content="https://static-cdn.jtvnw.net/jtv_user_pictures/thegrizzlymuffin-profile_image-02eee35e0789e8b8-150x150.jpeg" />
+		<meta name="og:site_name" content="GIZZLY MUFFIN SB" />
+		<meta name="og:description" content="THE GIZZLY MUFFIN SOUND BAORD" />
+		<meta name="og:country-name" content="USA" />
+		<meta name="description" content="THE GIZZLY MUFFIN SOUND BAORD" />
+		<meta name="keywords" content="thegizzlymuffin" />
+		<meta name="author" content="RingoMar">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-				tr = table.getElementsByTagName("tr");
-				for (i = 0; i < tr.length; i++) {
-					td1 = tr[i].getElementsByTagName("td")[0];
-					td2 = tr[i].getElementsByTagName("td")[2];
-					if (td1 || td2) {
-						if (td1.innerHTML.toUpperCase().indexOf(filter) > -1 || td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
-							tr[i].style.display = "";
-						} else {
-							tr[i].style.display = "none";
-						}
-					}
-				}
-			}
-			function onLoading() {
-				randomMeme();
-				console.log(currentMeme);
-				randomBottomGif();
-				var oAudio = document.getElementsByName('sound');
-				for (var i = oAudio.length - 1; i >= 0; i--) {
-					if (oAudio[i].innerHTML.indexOf("src=\"\"") == -1) {
-						audios.push(oAudio[i]);
-					}
-				}
-				document.getElementById('sampCount').value = audios.length;
-
-				var cache = document.getElementsByClassName("Meta-Data");
-				for (var i = 0; i < cache.length; i++) {
-					if (cache[i].title == "") {
-						cache[i].style.display = "none";
-					}
-				}
-			}
-
-
-			function clearSearchBar() {
-				document.getElementById('myInput').value = "";
-				searchBarKeyUp();
-			}
-			function randomMeme() {
-				var Memes = [
-					// ["<img src='https://static-cdn.jtvnw.net/emoticons/v1/567395/1.0'> Don't mind me, I'm just drinking my Title ","katieSip Don\'t mind me, I\'m just drinking my Title"],
-					// ["<img src='https://i.imgur.com/un3gikx.gif' style='width:28px;height:28px;'> I'm searching for Katierouu, have you seen her? ","katieT 🔎 I'm searching for Katierouu, have you seen her? "],
-					// ["Totally not Derpy, btw <img src='https://static-cdn.jtvnw.net/emoticons/v1/549891/1.0'>", "Totally not Derpy, btw katieDerp"],
-					// ["<img src='https://static-cdn.jtvnw.net/emoticons/v1/549912/1.0'> COCAINE <img src='https://static-cdn.jtvnw.net/emoticons/v1/549912/1.0'> ", "katieV COCAINE katieV"],
-					// ["SUP, BETA <img src='https://static-cdn.jtvnw.net/emoticons/v1/576410/1.0'>", 'SUP, BETA katieSep'],
-					// ["You have the right to remain silent <img src='https://static-cdn.jtvnw.net/emoticons/v1/576410/1.0'>",'You have the right to remain silent katieSep'],
-					// ["<img src='https://static-cdn.jtvnw.net/emoticons/v1/549931/1.0'> MEMES <img src='https://static-cdn.jtvnw.net/emoticons/v1/549931/1.0' style='transform: scaleX(-1);filter: FlipH;'>",'katieGive MEMES katieGive'],
-					// ['"We\'re not going to crash. Trust me guys, <br>I\'m a good driver" <img src="https://cdn.discordapp.com/emojis/306945329964515329.png" style="width:28px;height:28px;"> <img src="https://static-cdn.jtvnw.net/emoticons/v1/549891/1.0">','"We\'re not going to crash. Trust me guys, I\'m a good driver" katieCat 🤞'],
-					// ['"I\'m going to eat that fucking poodle tonight" <img src=\'https://static-cdn.jtvnw.net/emoticons/v1/549931/1.0\'>','"I\'m going to eat that fucking poodle tonight" katieGive'],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/540917/1.0"> NO MEMEING','katieREEE NO MEMEING'],
-					// ['<img src="https://cdn.betterttv.net/emote/59b594fe0d64e35b941728ec/1x"> Kabie AFK time to Sway <img src="https://cdn.betterttv.net/emote/59b594fe0d64e35b941728ec/1x">','kabieSway Kabie AFK time to Sway kabieSway'],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/578299/1.0"> <img src="https://static-cdn.jtvnw.net/emoticons/v1/540917/1.0"> <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/splashing-sweat-symbol_1f4a6.png" style="width:28px;height:28px;"> TOO HOT','katieSip katieREEE 💦 TOO HOT'],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/578299/1.0"> help, someone put glue on my mug','katieSip help, someone put glue on my mug'],
-					// ['Without Khloe <img src="https://cdn.betterttv.net/emote/56e9f494fff3cc5c35e5287e/1x"> <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/white-right-pointing-backhand-index_1f449.png" style="width:28px;height:28px;"> <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/chart-with-downwards-trend_1f4c9.png" style="width:28px;height:28px;"> with Khloe <img src="https://cdn.betterttv.net/emote/566c9fde65dbbdab32ec053e/1x"> <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/white-right-pointing-backhand-index_1f449.png" style="width:28px;height:28px;"> <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/chart-with-upwards-trend_1f4c8.png" style="width:28px;height:28px;">','without Khloe katieS 👉 📉 with Khloe FeelsGoodMan 👉 📈'],
-					// ['The moment when you say "Hi", <br>but Katie ignores you <img src="https://cdn.betterttv.net/emote/566c9fc265dbbdab32ec053b/1x">','The moment when you say "Hi", but Katie ignores you FeelsBadMan'],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/567395/1.0"> <img height="18px" src="https://cdn.frankerfacez.com/emoji/tw/1f4cb.svg" alt="📋"> let\'s see what we have on the agenda today... <br><img src="https://static-cdn.jtvnw.net/emoticons/v1/567395/1.0"> <img height="18px" src="https://cdn.frankerfacez.com/emoji/tw/1f4cb.svg" alt="📋"> yep, more derping', "katieSip  📋 let's see what we have on the agenda today... katieSip  📋 yep, more derping"],
-					// ['<img src="https://cdn.betterttv.net/emote/59b594fe0d64e35b941728ec/1x" alt="kabieSway"> awoo awoo awoo <img src="https://cdn.betterttv.net/emote/59b594fe0d64e35b941728ec/1x" alt="kabieSway">',"kabieSway awoo awoo awoo kabieSway"],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/754945/1.0" alt="katieTarkov">7 GLORY TO KABIESTAN AND MOTHER ROUUSSIA', "katieTarkov 7 GLORY TO KABIESTAN AND MOTHER ROUUSSIA"],
-					// ['<img src="https://static-cdn.jtvnw.net/emoticons/v1/754945/1.0" alt="katieTarkov"> Back to the gulag all of you,<br> you will work for the motherland','katieTarkov Back to the gulag all of you, you will work for the motherland']
-				];
-				var currentMemeId = Math.floor(Math.floor(Math.random() * Memes.length));
-				//var currentMemeId = Memes.length-1;
-				currentMeme = Memes[currentMemeId][1];
-				document.getElementById("random-meme-div").innerHTML = Memes[currentMemeId][0];
-			}
-			function randomBottomGif() {
-				var gifs = [
-					// ["https://imgur.com/dwryajR.gif", "right", "KageFinger"],
-					// ["https://i.imgur.com/un3gikx.gif", "left", "katieRes"],
-					// ["https://imgur.com/oiHWfCw.gif", "right", "katieMunchesPanties"],
-					// ["https://imgur.com/VUQSBnx.gif", "right", "kabie_has_triangles"],
-					// ["https://imgur.com/Sk3ceAy.gif","left", "Cat BLEBLEBLE"],
-					// ["https://imgur.com/4Cq1wSh.gif","left", "Cat Meow"]
-				];
-				var id = Math.floor(Math.floor(Math.random() * gifs.length));
-				document.getElementById("bottomGif").src = gifs[id][0];
-				document.getElementById("bottom-div").style = gifs[id][1] + ":0;";
-				console.log("Gif: " + gifs[id][2]);
-			}
-
-			function copyCurrentMeme() {
-				copyTextToClipboard(currentMeme);
-				alert("Copied the meme to clipboard");
-			}
-
-			function copyTextToClipboard(text) {
-				var textArea = document.createElement("textarea");
-				textArea.value = text;
-				document.body.appendChild(textArea);
-				textArea.select();
-				try {
-					var successful = document.execCommand('copy');
-					var msg = successful ? 'successful' : 'unsuccessful';
-					console.log('Copying text command was ' + msg);
-				} catch (err) {
-					console.log('Oops, unable to copy');
-				}
-				document.body.removeChild(textArea);
-			}
-
-			function queueAll() {
-				if (!queuerunning) {
-					if (AudioQueue.length > 0) {
-						AudioQueue = [];
-					}
-					if (document.getElementById("playLimitation").checked) {
-						for (var id = 0; id < Things.length; id++) {
-							if (!areAllElementsHidden()) {
-								if (audios[id].offsetParent != null) {
-									AudioQueue.push(audios[id]);
-								}
-							}
-							else {
-								alert("No sounds to queue");
-							}
-						}
-					}
-					else {
-						AudioQueue = audios;
-					}
-					runQueue();
-					document.getElementById('info_right_side').style.display = "block";
-				}
-
-			}
-
-			function runQueue() {
-
-				if (AudioQueue.length > 0) {
-					AudioQueue[0].play();
-					AudioQueue.splice(0, 1);
-					queuerunning = true;
-				}
-				else {
-					queuerunning = false;
-					document.getElementById('info_right_side').style.display = "none";
-				}
-			}
-
-			function updateCurrentMedia() {
-				var table = document.getElementById("currentMediaDisplay");
-				var cache1, cache2;
-				table.innerHTML = '';
-				for (var i = 0; i < currentMedia.length; i++) {
-					var li = document.createElement("li");
-					cache1 = currentMedia[i];
-					cache2 = cache1.getElementsByClassName("Meta-Data");
-					if (cache2[0] != null) {
-						cache1.removeChild(cache2[0]);
-					}
-					li.innerHTML = currentMedia[i].innerHTML;
-					table.appendChild(li);
-				};
-			}
-
-			document.onkeydown = function (evt) {
-				evt = evt || window.event;
-				var isEscape = false;
-				if ("key" in evt) {
-					isEscape = (evt.key == "Escape" || evt.key == "Esc");
-				} else {
-					isEscape = (evt.keyCode == 27);
-				}
-				if (isEscape) {
-					stopAllSounds();
-				}
-			};
-
-
-		</script>
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="shortcut icon"
+			href="https://static-cdn.jtvnw.net/jtv_user_pictures/thegrizzlymuffin-profile_image-02eee35e0789e8b8-150x150.jpeg" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 		<style>
-			body {
-				background: #000046;
-				/* fallback for old browsers */
-				background: -webkit-linear-gradient(to right, #000046, #1cb5e0);
-				/* Chrome 10-25, Safari 5.1-6 */
-				background: linear-gradient(to right, #000046, #1cb5e0);
-				/* background-repeat: repeat; */
-				background-size: auto, contain;
-				min-height: 128px;
-				font-weight: bold;
-				font-family: 'Ubuntu', sans-serif;
-				/*
-			https://i.imgur.com/8VA5Xnt.png - normal
-			https://imgur.com/uKScKrN.png - normal old
-			https://i.imgur.com/B5iPQTI.png - christmas
-			background-attachment: fixed;
-			*/
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+
+				to {
+					opacity: 1
+				}
 			}
 
-			table {
-				border: none;
-				text-align: center;
-				vertical-align: center;
-				font-family: inherit;
-				border-color: #30ffcd;
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+
+				to {
+					opacity: 1
+				}
 			}
 
-			tr {
-				border-collapse: collapse;
-				font-family: inherit;
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
 			}
 
-			​ td {
-				min-height: 40px;
-				vertical-align: center;
-				display: block;
-				font-family: inherit;
-			}
-
-			audio {
-				float: right;
-			}
-
-			.wrapper {
-				width: 100%;
-				min-height: 400px;
-				position: relative;
-				margin-top: 47px;
-				z-index: 0;
-			}
-
-			#bottom-div {
-				position: absolute;
-				bottom: 0;
-				display: inline-flex;
-			}
-
-			#bottomGif {
-				display: block;
-				max-height: 130px;
-				width: auto;
-				height: auto;
-			}
-
-			#hint_right_side {
-				background-color: rgba(255, 255, 255, 0.8);
-				right: 0;
-				position: fixed;
-				z-index: 50;
-				font-size: 16px;
-				font-family: inherit;
-				height: 33px;
-			}
-
-			#info_right_side {
-				margin-top: 33px;
-				background-color: red;
-				opacity: 0.9;
-				right: 0;
-				position: fixed;
-				display: none;
-				z-index: 2;
-			}
-
-			.left-side-container {
-				position: absolute;
-				font-size: 20px;
-				font-family: inherit;
-				top: 1px;
-				left: -8px;
-				height: 100%;
-			}
-
-			#left-top-fixed-div {
-				z-index: 50;
-				position: fixed !important;
-			}
-
-			.random-meme-div {
-				display: inline-block;
-				font-size: inherit;
-				font-family: inherit;
-				background-color: rgba(255, 255, 255, 1);
-				opacity: 0.8;
-				cursor: pointer;
-			}
-
-			.random-meme-div:hover,
-			#left-top-fixed-div:hover {
-				opacity: 1;
-				z-index: 4 !important;
-			}
-
-			#currentMediaDisplayDiv {
-				font-size: inherit;
-				font-family: inherit;
-				background-color: rgba(1, 114, 247, 0.8);
-				border-radius: 5px;
-				box-shadow: rgba(115, 115, 115, 0.5);
-			}
-
-			#myInput {
-				background-image: url('https://cdn.discordapp.com/emojis/396466672057319424.png?v=1');
-				background-position: 5px 5px;
-				background-size: 28px 28px;
-				background-repeat: no-repeat;
-				background-color: #323151;
-				width: 90%;
-				font-size: 16px;
-				font-family: inherit;
-				padding: 12px 20px 12px 40px;
-				border: 1px solid #fe2157;
-				margin-bottom: 12px;
-			}
-
-			#wrapperTable {
-				min-width: 51%;
-				border: none;
-				margin: auto;
-				z-index: 1;
-			}
-
-			#Sample-Counter {
-				margin-left: 2px;
-				position: absolute;
-				float: left;
-			}
-
-			.search-box,
-			.close-icon,
-			.search-wrapper {
-				position: relative;
-				padding: 10px;
-			}
-
-			.search-wrapper {
-				width: 100%;
-				margin: auto;
-				margin-top: 1px;
-			}
-
-			.close-icon {
-				border: 1px solid transparent;
-				background-color: transparent;
-				display: inline-block;
-				vertical-align: middle;
-				outline: 0;
-				cursor: pointer;
-			}
-
-			.close-icon:after {
-				content: "X";
-				display: block;
-				width: 15px;
-				height: 15px;
-				position: absolute;
-				background-color: #FA9595;
-				z-index: 1;
-				right: 35px;
-				top: 0;
-				bottom: 0;
-				margin: auto;
-				padding: 2px;
-				border-radius: 50%;
-				text-align: center;
-				color: white;
-				font-weight: normal;
-				font-size: 12px;
-				font-family: inherit;
-				box-shadow: 0 0 2px #E50F0F;
-				cursor: pointer;
-			}
-
-			.search-box:not(:valid)~.close-icon {
-				display: none;
-			}
-
-			.control_button {
-				background-color: #e7e7e7;
-				color: black;
-				margin-top: 4px;
-				border-radius: 4px;
-				border: none;
-				padding: 5px 15px;
-				text-align: center;
-				text-decoration: none;
-				display: inline-block;
-				min-width: 90px;
-				overflow: hidden;
-			}
-
-			.control_button:hover {
-				background-color: #DADADA;
-				cursor: pointer;
-			}
-
-			.control_button:active {
-				background-color: #DADADA;
-				box-shadow: 0 2px #666;
-				transform: translateY(2px);
-			}
-
-			.serach_Tag {
-				display: none;
-			}
-
-			#soundTable {
-				border: 1px solid #30ffcd;
-				border-collapse: collapse;
-			}
-
-			#soundTable tr {
-				border-bottom: 1px solid #30ffcd;
-				border-top: 1px solid #30ffcd;
-				background-color: #323151;
-			}
-
-			#soundTable tr:nth-child(even) {
-				background-color: #323151;
-			}
-
-			#soundTable td:nth-child(2n+3) {
-				border-left: 2px solid #30ffcd;
-			}
-
-			#Bottom_explnation_stuff {
-				font-size: 13px;
-				font-family: inherit;
-			}
-
-			#Bottom_explnation_stuff img {
-				height: 17px;
-				width: 17px;
-			}
-
-			#play:hover {
-				background-color: red;
-			}
-
-			.Meta-Data {
-				float: right;
-				vertical-align: center;
-			}
-
-			.Meta-Data img {
-				height: 60%;
-				width: 60%;
-			}
-
-			.navbar {
-				overflow: hidden;
-				background-color: #333;
-				position: fixed;
-				top: 0;
-				width: 100%;
-				z-index: 50;
-			}
-
-			.navbar a {
-				float: left;
-				display: block;
-				color: #f2f2f2;
-				text-align: center;
-				padding: 14px 16px;
-				text-decoration: none;
-				font-size: 17px;
-			}
-
-			.navbar a:hover {
-				background: #ddd;
-				color: black;
-			}
-
-			a#home-gif {
-				background-image: url('https://cdn.discordapp.com/attachments/239493835296604161/414508677773656074/NikUgly.gif');
-				background-repeat: no-repeat;
-				display: inline-block;
-				overflow: hidden;
-				height: 6px;
-				line-height: 999px;
-				vertical-align: bottom;
-				width: 2px;
-			}
 		</style>
 	</head>
 
-	<body onload="onLoading();">
-		<div class="navbar">
-			<a id="home-gif" herf="/grizzly_soundboard.html"> Nick </a>
-			<a id="nav-cen">THE GRIZZLY MUFFIN SOUND BOARD</a>
-			<a href="https://www.twitch.tv/thegizzlymuffin">Twitch</a>
-			<a href="http://discord.gg/0x8toHb1zrP66wHu">Discord</a>
-			<a href="https://twitter.com/GrizzlyMuffin">Twitter</a>
+	<body>
 
-		</div>
-		<div class="wrapper">
-			<div id="left-side-container" class="left-side-container">
-				<div id="left-top-fixed-div">
-					<div id="random-meme-div" class="random-meme-div" onclick="copyCurrentMeme()" title="Click left to copy meme to clipboard"></div>
-					<div id="currentMediaDisplayDiv">
-						<ul id="currentMediaDisplay"></ul>
-						<!-- <img src="https://cdn.discordapp.com/attachments/239493835296604161/414508677773656074/NikUgly.gif" style="width: 23px;"> -->
-					</div>
+		<header>
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+				<img src='https://cdn.discordapp.com/attachments/239493835296604161/414508677773656074/NikUgly.gif' />
+				<a class="navbar-brand" href="">THE GIZZLY MUFFIN SOUND BAORD</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+					aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" id="sc" href=""><span>Sounds: </span> <span id="scount"></span>
+								<span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item active">
+							<a class="nav-link" href=""><i class="fa fa-hdd-o" aria-hidden="true"></i><span
+									id="lastplay">------</span> <i class="fa fa-play" aria-hidden="true"></i> <span
+									id="time">00:00:00</span><span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<button id="Killswitch" onclick="stopAudio();"><i class="fa fa-stop"
+									aria-hidden="true"></i><span>STOP</span></button>
+						</li>
+						<li class="nav-item">
+							<div class="volslide">
+								<i class="fa fa-volume-up">
+									<input id="vol-control" type="range" value="100" min="0" max="100" step="10"
+										oninput="SetVolume(this.value)" onchange="SetVolume(this.value)"></input></i>
+							</div>
+						</li>
+					</ul>
 				</div>
+			</nav>
+		</header>
+
+		<hr class="featurette-divider">
+
+		<main role="main">
+			<div class="input-group">
+				<input type="text" id="soundfind" class="searchTerm" placeholder="Search">
 			</div>
-			<div id="hint_right_side" onClick="stopAllSounds();">Hitting Esc will Stop all sounds </div>
-			<div id="info_right_side">Queue running, stop with Esc!
-				<br>pausing the current only FF to next sample!</div>
-			<table id="wrapperTable" style="background: linear-gradient(to left, #000046, #1cb5e0);">
-				<tr>
-					<td>
-						<div>
-							<div id="Sample-Counter">
-								<label for="sampCount">Sample count: 13
-								</label>
-							</div>
-							<a style="margin-bottom:5px;">
-								<!-- 
-								<img style="width: 20px;" src="https://cdn.discordapp.com/emojis/392419736895488000.png">
-								<a target="_blank" href="https://www.twitch.tv/thegizzlymuffin"> THE GRIZZLY MUFFIN </a> SOUND BOARD
-								<img src="https://cdn.discordapp.com/attachments/239493835296604161/414508677773656074/NikUgly.gif"> -->
-							</a>
-							<br>
-							<button class="control_button" id="play" onclick="toggleAllSounds();" title="Warning this will play ALL sounds at once!">
-								PLAY
-								<b>ALL</b> AT ONCE
-							</button>
-							<button class="control_button" onclick="rewindAudio();">
-								Rewind all
-							</button>
+
+			<hr class="featurette-divider">
 
 
-							<br>
+			<div class="container marketing">
+				<div class="col-16 col-tablet-12">
+					<section>
+						<ul id="board">
+						</ul>
+					</section>
+				</div><!-- /.col-lg-4 -->
+			</div><!-- /.row -->
 
-							<button class="control_button" id="0.5" onclick="ChangeSpeed(id);">
-								0.5 Speed
-							</button>
-							<button class="control_button" id="1" onclick="ChangeSpeed(id);">
-								Normal Speed
-							</button>
-							<button class="control_button" id="2" onclick="ChangeSpeed(id);">
-								2x Speed
-							</button>
-							<label for="cspeed">Custom Speed:
-								<input id="cspeed" name="cspeed" type="number" min="0.5" max="4" step="0.25">
-							</label>
-							<button class="control_button" id="btnSet" onclick="ChangeCustomSpeed();">
-								Set Custom Speed
-							</button>
-							<br>
-							<div class="search-wrapper">
-								<form>
-									<input type="text" id="myInput" onkeyup="searchBarKeyUp();" placeholder="Search for Samples.." title="Type in a Sample name"
-									 style="margin-top:5px;" />
-									<button id="btnClearSearchbar" class="close-icon" type="reset" onclick="clearSearchBar();" style="display:none;">
-								</form>
-							</div>
-						</div>
-						<table id="soundTable">
-							<tr>
-								<td class="sample" id="cell_170">
-									<a class="Meta-Data" title="What? noo">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									What no
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="170" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414320045318209547/wuuuut.mp3" type="audio/mp3"
-										/>
+			<hr class="featurette-divider">
 
-									</audio>
-								</td>
-								<td class="sample" id="cell_169">
-									<a class="Meta-Data" title="Darksouls when you about to die">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									When you nut and
-									<br>she keeps on succn'
-									<a class="serach_Tag">Dark souls</a>
-								</td>
-								<td>
-									<audio name="sound" id="169" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309509075304448/When_you_nut_and_she_keeps_succing.mp3"
-										 type="audio/mp3" />
+			<!-- /END THE FEATURETTES -->
 
-									</audio>
-								</td>
-							</tr>
-							<!-- New Row -->
-							<tr>
-								<td class="sample" id="cell_168">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									WOAHHHHHH?
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="168" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309506571567104/THE_DUCK.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-								<td class="sample" id="cell_167">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									Grizzly LOL Clap
-									<a class="serach_Tag">laugh grizzly</a>
-								</td>
-								<td>
-									<audio name="sound" id="167" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309503782092802/that_facelaugh.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-							</tr>
-							<!-- New Row -->
-							<tr>
-								<td class="sample" id="cell_166">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									Producer Tag
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="166" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309501337075712/PRODUCER_TAG.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-								<td class="sample" id="cell_165">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									When you nut for the
-									<br> first time
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="165" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309499701035019/Nut.mp3" type="audio/mp3"
-										/>
-
-									</audio>
-								</td>
-							</tr>
-							<!-- New Row -->
-							<tr>
-								<td class="sample" id="cell_164">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									Only succ at succ'
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="164" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309497084051457/Man_only_thing_I_suk_at_is_suking_okay_.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-								<td class="sample" id="cell_163">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									Let me stop
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="163" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309494584246288/LET_ME_STOP.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-							</tr>
-							<!-- New Row -->
-							<tr>
-								<td class="sample" id="cell_162">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									Space Explosion
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="162" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309492789084160/Exorcist_needed..mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-								<td class="sample" id="cell_161">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									EH EH EH EH
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="161" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309490368708619/EEEGHEEEEGHEEEEEGH_.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-							</tr>
-							<!-- New Row -->
-							<tr>
-								<td class="sample" id="cell_160">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									When she doesnt understand
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="160" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414309487424307200/DO_YOU_UNDERSTAND_ME.mp3"
-										 type="audio/mp3" />
-
-									</audio>
-								</td>
-								<td class="sample" id="cell_159">
-									<a class="Meta-Data" title="">
-										<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-											<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-											 transform="translate(3 3)"></path>
-										</svg>
-									</a>
-									OH I love it
-									<a class="serach_Tag"></a>
-								</td>
-								<td>
-									<audio name="sound" id="159" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-										<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414319211188322304/WTF_TJ_.mp3" type="audio/mp3"
-										/>
-
-									</audio>
-								</td>
-
-							</tr>
-							<!-- new row -->
-							<td class="sample" id="cell_100">
-								<a class="Meta-Data" title="">
-									<svg name="RichActivity" class="member-activity-icon" width="25" height="25" viewBox="0 0 16 16">
-										<path class="member-activity-icon-foreground" fill="currentColor" d="M6,7 L2,7 L2,6 L6,6 L6,7 Z M8,5 L2,5 L2,4 L8,4 L8,5 Z M8,3 L2,3 L2,2 L8,2 L8,3 Z M8.88888889,0 L1.11111111,0 C0.494444444,0 0,0.494444444 0,1.11111111 L0,8.88888889 C0,9.50253861 0.497461389,10 1.11111111,10 L8.88888889,10 C9.50253861,10 10,9.50253861 10,8.88888889 L10,1.11111111 C10,0.494444444 9.5,0 8.88888889,0 Z"
-										 transform="translate(3 3)"></path>
-									</svg>
-								</a>
-								When he wasn't ready
-
-								<a class="serach_Tag"></a>
-							</td>
-							<td>
-								<audio name="sound" id="100" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-									<source id="soundSource" src="https://cdn.discordapp.com/attachments/414309372370485248/414570712607752193/When_you_wasnt_ready.mp3"
-									 type="audio/mp3" />
-
-								</audio>
-							</td>
-							<td id="cell_">
-
-								<a class="serach_Tag"></a>
-							</td>
-							<td>
-								<audio name="sound" id="" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-									<source id="soundSource" src="" type="audio/mp3" />
-
-								</audio>
-							</td>
-				</tr>
+			</div><!-- /.container -->
 
 
-
-				<!-- New Row -->
-				</table>
-				<span id="Bottom_explnation_stuff">
-					All Audio are taken from Twitch
-					<img src="https://static-cdn.jtvnw.net/emoticons/v1/112290/1.0">
-					<br> Made by
-					<a target="_blank" href="twitter.com/justin__h10"> RingoMar </a>
-					aka the fun police
-					<br> Designed by
-					<a title="Dr_SFFan123 on Twitch" target="_blank" style="cursor:pointer;">Dr_SFSFSFan</a>
-				</span>
-				</td>
-				</tr>
-				<!-- End wrapper tabel -->
-			</table>
-			<div id="bottom-div">
-				<img id="bottomGif">
-			</div>
-		</div>
+			<!-- FOOTER -->
+			<footer class="container">
+				<p class="float-right" id="backtotop">
+					<a href="#"><i class="fa fa-chevron-circle-up" aria-hidden="true"></i>
+						Back to top</a>
+				</p>
+				<p></p>Designed and Developed by: <a href="https://i.imgur.com/kf9aPlX.png"> RingoMar </a>
+				</p>
+			</footer>
+		</main>
+		<script type="text/javascript" src="js/script.js"></script>
 	</body>
 
 </html>
-
-
-<!-- <tr>
-						<td class="sample" id="cell_">
-							
-							<a class="serach_Tag"></a>
-						</td>
-						<td>
-							<audio name="sound"  id="" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-						  	<source id="soundSource" src="" type="audio/mp3" />
-						   	
-							</audio>
-						</td>
-						<td id="cell_">
-				  				
-			  				<a class="serach_Tag"></a>
-			  			</td>
-	  					<td>
-		  					<audio name="sound"  id="" onplay="startsPlaying(id);" onpause="stopsPlaying(id);" controls>
-			      			<source id="soundSource" src="" type="audio/mp3" />
-			       			
-			    		</audio>
-						</td>
-					</tr>
-					New row -->
